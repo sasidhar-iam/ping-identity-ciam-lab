@@ -1,0 +1,67 @@
+{
+  "principal": {
+    "source": "ad",
+    "externalId": "ad-object-001"
+  },
+  "links": [
+    {
+      "personId": "person-001",
+      "source": "ad",
+      "externalId": "ad-object-001"
+    },
+    {
+      "personId": "person-001",
+      "source": "ldap",
+      "externalId": "ldap-entry-001"
+    },
+    {
+      "personId": "person-001",
+      "source": "db",
+      "externalId": "db-row-001"
+    }
+  ],
+  "records": [
+    {
+      "source": "ad",
+      "externalId": "ad-object-001",
+      "status": "active",
+      "groups": [
+        "payments-approvers"
+      ],
+      "fetchedAt": 1000
+    },
+    {
+      "source": "ldap",
+      "externalId": "ldap-entry-001",
+      "status": "active",
+      "groups": [
+        "customer-readers"
+      ],
+      "fetchedAt": 1000
+    },
+    {
+      "source": "db",
+      "externalId": "db-row-001",
+      "status": "active",
+      "groups": [
+        "approve-payments"
+      ],
+      "fetchedAt": 1000
+    }
+  ],
+  "requiredSources": [
+    "ldap",
+    "ad",
+    "db"
+  ],
+  "clientScopes": [
+    "accounts:read",
+    "payments:approve"
+  ],
+  "requestedScopes": [
+    "accounts:read",
+    "payments:approve"
+  ],
+  "mfa": true,
+  "now": 1010
+}

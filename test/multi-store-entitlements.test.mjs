@@ -1,0 +1,16 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {resolveEntitlements} from '../src/multi-store-entitlements.mjs';
+const sample=()=>JSON.parse(readFileSync(new URL('../fixtures/multi-store-person.json',import.meta.url),'utf8'));
+test('linked person receives only permitted requested scopes',()=>assert.deepEqual(resolveEntitlements(sample()),{subject:'person-001',scopes:['accounts:read','payments:approve']}));
+test('same username is not an identity link',()=>{const x=sample();x.principal.externalId='person@example.test';assert.throws(()=>resolveEntitlements(x),/unlinked/);});
+test('ambiguous account link fails closed',()=>{const x=sample();x.links.push({...x.links[0],personId:'other-person'});assert.throws(()=>resolveEntitlements(x),/ambiguous/);});
+test('disabled linked account denies issuance',()=>{const x=sample();x.records[0].status='disabled';assert.throws(()=>resolveEntitlements(x),/inactive/);});
+test('source outage cannot drop required checks',()=>{const x=sample();x.records=x.records.filter(r=>r.source!=='db');assert.throws(()=>resolveEntitlements(x),/lookup_failed/);});
+test('stale role cache denies',()=>{const x=sample();x.now=1061;assert.throws(()=>resolveEntitlements(x),/stale/);});
+test('payment approval requires MFA',()=>{const x=sample();x.mfa=false;assert.deepEqual(resolveEntitlements(x).scopes,['accounts:read']);});
+test('payment approval requires database business entitlement',()=>{const x=sample();x.records[2].groups=[];assert.deepEqual(resolveEntitlements(x).scopes,['accounts:read']);});
+test('client allowlist caps scopes',()=>{const x=sample();x.clientScopes=['accounts:read'];assert.deepEqual(resolveEntitlements(x).scopes,['accounts:read']);});
+test('unknown admin groups never imply privileges',()=>{const x=sample();for(const r of x.records)r.groups=['admin'];assert.deepEqual(resolveEntitlements(x).scopes,[]);});
+test('LDAP-only population can use an explicit one-source policy',()=>{const x=sample();x.principal={source:'ldap',externalId:'ldap-entry-001'};x.requiredSources=['ldap'];x.records=x.records.filter(r=>r.source==='ldap');assert.deepEqual(resolveEntitlements(x).scopes,['accounts:read']);});
