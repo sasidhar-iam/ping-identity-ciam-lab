@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {refreshRequest} from '../src/refresh-request.mjs';
+const url='https://id.example.test/token';
+test('opaque refresh token requires no JWT structure',()=>{const r=refreshRequest(url,'demo','opaque-token');assert.equal(new URLSearchParams(r.body).get('refresh_token'),'opaque-token');assert.equal(r.method,'POST');});
+test('special characters survive form encoding',()=>{const token='opaque+/=&%';assert.equal(new URLSearchParams(refreshRequest(url,'demo',token).body).get('refresh_token'),token);});
+test('reject insecure endpoint',()=>assert.throws(()=>refreshRequest('http://id.example.test/token','demo','t')));
+test('reject endpoint credentials',()=>assert.throws(()=>refreshRequest('https://user:pass@id.example.test/token','demo','t')));
+test('reject missing client or token',()=>{assert.throws(()=>refreshRequest(url,'','t'));assert.throws(()=>refreshRequest(url,'demo',null));});
+test('reject control characters in token',()=>assert.throws(()=>refreshRequest(url,'demo','secret\n')));
