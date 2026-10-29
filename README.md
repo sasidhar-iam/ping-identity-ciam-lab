@@ -55,3 +55,7 @@ Read [SAML to OIDC with LDAP, database and AD users](docs/saml-oidc-multi-store.
 - [PingDirectory](https://github.com/sasidhar-iam/pingdirectory-ciam-lab)
 - [PingFederate and cloud identity](https://github.com/sasidhar-iam/ping-identity-ciam-lab)
 - [Banking IAM overview and release-impact guide](https://github.com/sasidhar-iam/banking-iam-repo)
+
+## ForgeRock IDM / PingIDM vulnerability review
+
+Read the [IDM 7.1+ CVE review](docs/security/pingidm-cve-review-2026-10-29.md), checked 29 October 2026. It covers RCS access control, query-filter disclosure, LDAP connector versions, CIAM regression checks and vendor-verification gaps. It is a public-source review, not a scan of any deployment.
