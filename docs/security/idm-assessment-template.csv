@@ -1,0 +1,4 @@
+cve_id,asset_alias,idm_build,hotfix_id,rcs_mode,connector_version,applicability,exact_vendor_fix_reference,required_configuration,evidence_reference,status,owner,last_reviewed
+CVE-2025-20628,,,,,,not_assessed,,,,open,,
+CVE-2024-23600,,,,,,not_assessed,,,,open,,
+CVE-2023-1656,,,,,,not_assessed,,,,open,,
